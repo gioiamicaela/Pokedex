@@ -72,7 +72,6 @@ const Pokemon = () => {
     }, [token, offset]);
 
     useEffect(() => {
-        // Fetch more Pokémon if the current page exceeds the loaded list
         if (currentPage * pokemonsPerPage > pokemons.length) {
             const newOffset = offset + 100;
             setOffset(newOffset);
@@ -102,12 +101,10 @@ const Pokemon = () => {
         }
     };
 
-    // Filtrar los Pokémon según el término de búsqueda
     const filteredPokemons = pokemons.filter(pokemon =>
         pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Determina los Pokémon que se muestran en la página actual
     const currentPokemons = filteredPokemons.slice(indexOfFirstPokemon, indexOfLastPokemon);
 
     if (loading) return <div>Loading...</div>;

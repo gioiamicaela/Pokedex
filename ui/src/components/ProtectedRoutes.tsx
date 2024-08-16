@@ -6,7 +6,7 @@ interface ProtectedRouteProps extends RouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ component: Component, ...rest }) => {
-    const token = localStorage.getItem('token'); // Verificar si hay un token en el localStorage
+    const token = localStorage.getItem('token');
 
     return (
         <Route
