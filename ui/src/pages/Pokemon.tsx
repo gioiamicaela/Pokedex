@@ -1,0 +1,143 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './Pokemon.css';
+import { Link } from 'react-router-dom';
+import NavBar from '../components/NavBar';
+import SearchBar from '../components/SearchBar';
+import Pagination from '../components/Pagination';
+
+interface Pokemon {
+    name: string;
+    url: string;
+    image: string;
+}
+
+const Pokemon = () => {
+    const [token, setToken] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [pokemonsPerPage] = useState<number>(20);
+    const [offset, setOffset] = useState<number>(0);
+    const [pageGroup, setPageGroup] = useState<number>(0);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+
+    const fetchPokemons = async (offset: number) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`${apiUrl}/pokemonList?offset=${offset}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            const pokemonList = response.data.pokemons;
+
+            const detailedPokemons = await Promise.all(pokemonList.map(async (pokemon: { url: string }) => {
+                const pokemonResponse = await axios.get(pokemon.url);
+                const pokemonData = pokemonResponse.data;
+
+                return {
+                    name: pokemonData.name,
+                    url: pokemon.url,
+                    image: pokemonData.sprites.front_default,
+                };
+            }));
+
+            setPokemons(prevPokemons => [...prevPokemons, ...detailedPokemons]);
+        } catch (err) {
+            console.error('Error fetching Pokémon:', err);
+            setError('Error fetching Pokémon.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const savedToken = localStorage.getItem('token');
+        if (savedToken) {
+            setToken(savedToken);
+        } else {
+            setError('No token found.');
+            setLoading(false);
+            return;
+        }
+    }, []);
+
+    useEffect(() => {
+        if (token) {
+            fetchPokemons(offset);
+        }
+    }, [token, offset]);
+
+    useEffect(() => {
+        // Fetch more Pokémon if the current page exceeds the loaded list
+        if (currentPage * pokemonsPerPage > pokemons.length) {
+            const newOffset = offset + 100;
+            setOffset(newOffset);
+        }
+    }, [currentPage]);
+
+    const indexOfLastPokemon = currentPage * pokemonsPerPage;
+    const indexOfFirstPokemon = indexOfLastPokemon - pokemonsPerPage;
+    const totalPages = Math.ceil(pokemons.length / pokemonsPerPage);
+    const maxPageGroup = Math.ceil(totalPages / 5);
+
+    const paginate = (pageNumber: number) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const nextPageGroup = () => {
+        if (pageGroup < maxPageGroup - 1) {
+            setPageGroup(pageGroup + 1);
+            setCurrentPage((pageGroup + 1) * 5 + 1);
+        }
+    };
+
+    const prevPageGroup = () => {
+        if (pageGroup > 0) {
+            setPageGroup(pageGroup - 1);
+            setCurrentPage(pageGroup * 5);
+        }
+    };
+
+    // Filtrar los Pokémon según el término de búsqueda
+    const filteredPokemons = pokemons.filter(pokemon =>
+        pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Determina los Pokémon que se muestran en la página actual
+    const currentPokemons = filteredPokemons.slice(indexOfFirstPokemon, indexOfLastPokemon);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
+
+    return (
+        <div>
+            <NavBar/>
+            <h1>Pokémon List</h1>
+            <SearchBar query={searchQuery} onSearch={setSearchQuery} />
+            <div className="pokemon-grid">
+                {currentPokemons.map((pokemon, index )=> (
+                     <div key={`${pokemon.name}-${index}`} className="pokemon-item">
+                     <Link to={`/pokemon/${pokemon.name}`}>
+                         <img src={pokemon.image} alt={pokemon.name} />
+                     </Link>
+                     <span>{pokemon.name}</span>
+                 </div>
+                ))}
+            </div>
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                pageGroup={pageGroup}
+                onPageChange={paginate}
+                onPrevGroup={prevPageGroup}
+                onNextGroup={nextPageGroup}
+            />
+        </div>
+    );
+};
+
+export default Pokemon;
