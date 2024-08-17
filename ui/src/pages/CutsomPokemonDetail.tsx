@@ -1,7 +1,7 @@
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import './PokemonDetail.css';
+import './CustomPokemonDetail.css';
 import NavBar from '../components/NavBar';
 
 const CustomPokemonDetail = () => {
@@ -137,94 +137,95 @@ const CustomPokemonDetail = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div>
+        <div className="page-container">
+          <div className="navbar-container">
             <NavBar />
-            <h1>Pokémon Custom Detail</h1>
-            <div>
-                <h2>{pokemon?.name}</h2>
-                <img src={pokemon?.image} alt={pokemon?.name} />
-
-                {isEditing ? (
-                    <div>
-                        <label>
-                            Nombre:
-                            <input
-                                type="text"
-                                name="name"
-                                value={editedPokemon?.name !== undefined ? editedPokemon.name : pokemon?.name || ''}
-                                onChange={handleEditChange}
-                            />
-                        </label>
-                        <label>
-                            Altura:
-                            <input
-                                type="number"
-                                name="height"
-                                value={editedPokemon?.height !== undefined ? editedPokemon.height : pokemon?.height || ''}
-                                onChange={handleEditChange}
-                            />
-                        </label>
-                        <label>
-                            Peso:
-                            <input
-                                type="number"
-                                name="weight"
-                                value={editedPokemon?.weight !== undefined ? editedPokemon.weight : pokemon?.weight || ''}
-                                onChange={handleEditChange}
-                            />
-                        </label>
-                        <label>
-                            Habilidades:
-                            <input
-                                type="text"
-                                name="abilities"
-                                value={editedPokemon?.abilities?.length ? editedPokemon.abilities?.join(', ') : pokemon?.abilities?.join(', ') || ''}
-                                onChange={(e) =>
-                                    handleEditChange({
-                                        target: {
-                                            name: 'abilities',
-                                            value: e.target.value.split(',').map((a) => a.trim()),
-                                        },
-                                    } as any)
-                                }
-                            />
-                        </label>
-                        <label>
-                            Tipos:
-                            <input
-                                type="text"
-                                name="types"
-                                value={editedPokemon?.types?.length ? editedPokemon.types?.join(', ') : pokemon?.types?.join(', ') || ''}
-                                onChange={(e) =>
-                                    handleEditChange({
-                                        target: {
-                                            name: 'types',
-                                            value: e.target.value.split(',').map((t) => t.trim()),
-                                        },
-                                    } as any)
-                                }
-                            />
-                        </label>
-                        <button onClick={handleSave}>Guardar</button>
-                        <button onClick={handleCancel}>Cancelar</button>
-                    </div>
-                ) : (
-                    <div>
-                        <p>Altura: {pokemon?.height}</p>
-                        <p>Peso: {pokemon?.weight}</p>
-                        <p>Habilidades: {pokemon?.abilities?.join(', ')}</p>
-                        <p>Tipos: {pokemon?.types?.join(', ')}</p>
-                        <button onClick={() => setIsEditing(true)}>Editar</button>
-                    </div>
-                )}
-            </div>
-
-            <button onClick={handleDelete}>Eliminar</button>
-            <button onClick={handleFavorite} className="favorite-button">
+          </div>
+          <div className="pokemon-custom-detail-container">
+            <div className="pokemon-custom-detail">
+              <h1>Pokémon Custom Detail</h1>    
+              {isEditing ? (
+                <div>
+                  <label>
+                    Nombre:
+                    <input
+                      type="text"
+                      name="name"
+                      value={editedPokemon?.name !== undefined ? editedPokemon.name : pokemon?.name || ''}
+                      onChange={handleEditChange}
+                    />
+                  </label>
+                  <label>
+                    Altura:
+                    <input
+                      type="number"
+                      name="height"
+                      value={editedPokemon?.height !== undefined ? editedPokemon.height : pokemon?.height || ''}
+                      onChange={handleEditChange}
+                    />
+                  </label>
+                  <label>
+                    Peso:
+                    <input
+                      type="number"
+                      name="weight"
+                      value={editedPokemon?.weight !== undefined ? editedPokemon.weight : pokemon?.weight || ''}
+                      onChange={handleEditChange}
+                    />
+                  </label>
+                  <label>
+                    Habilidades:
+                    <input
+                      type="text"
+                      name="abilities"
+                      value={editedPokemon?.abilities?.length ? editedPokemon.abilities?.join(', ') : pokemon?.abilities?.join(', ') || ''}
+                      onChange={(e) =>
+                        handleEditChange({
+                          target: {
+                            name: 'abilities',
+                            value: e.target.value.split(',').map((a) => a.trim()),
+                          },
+                        } as any)
+                      }
+                    />
+                  </label>
+                  <label>
+                    Tipos:
+                    <input
+                      type="text"
+                      name="types"
+                      value={editedPokemon?.types?.length ? editedPokemon.types?.join(', ') : pokemon?.types?.join(', ') || ''}
+                      onChange={(e) =>
+                        handleEditChange({
+                          target: {
+                            name: 'types',
+                            value: e.target.value.split(',').map((t) => t.trim()),
+                          },
+                        } as any)
+                      }
+                    />
+                  </label>
+                  <button onClick={handleSave}>Guardar</button>
+                  <button onClick={handleCancel}>Cancelar</button>
+                </div>
+              ) : (
+                <div>
+                  <p>Altura: {pokemon?.height}</p>
+                  <p>Peso: {pokemon?.weight}</p>
+                  <p>Habilidades: {pokemon?.abilities?.join(', ')}</p>
+                  <p>Tipos: {pokemon?.types?.join(', ')}</p>
+                  <button onClick={() => setIsEditing(true)}>Editar</button>
+                </div>
+              )}
+    
+              <button onClick={handleDelete}>Eliminar</button>
+              <button onClick={handleFavorite} className="favorite-button">
                 {isFavorite ? 'Es tu favorito ❤️' : 'Marcar como Favorito ❤️'}
-            </button>
+              </button>
+            </div>
+          </div>
         </div>
-    );
+      );
 };
 
 export default CustomPokemonDetail;

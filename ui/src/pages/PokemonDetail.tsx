@@ -74,7 +74,7 @@ const PokemonDetail = () => {
             fetchPokemon();
         }
 
-    }, [ isFavorite]);
+    }, [token, name]);
 
     const handleFavorite = async () => {
         const token = localStorage.getItem('token');
@@ -110,33 +110,37 @@ const PokemonDetail = () => {
         }
     };
 
-    // if (loading) return <div>Loading...</div>;
-    // if (error) return <div>{error}</div>;
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
 
     return (
-        <div>
+        <div className="page-container">
+          <div className="navbar-container">
             <NavBar />
+          </div>
+          <div className="pokemon-detail-container">
             <div className="pokemon-detail">
-                {pokemon && (
-                    <>
-                        <div className="pokemon-detail-image">
-                            <img src={pokemon.image} alt={pokemon.name} />
-                        </div>
-                        <div className="pokemon-detail-info">
-                            <h1>{pokemon.name}</h1>
-                            <p><strong>Height:</strong> {pokemon.height} decimetres</p>
-                            <p><strong>Weight:</strong> {pokemon.weight} hectograms</p>
-                            <p><strong>Abilities:</strong> {pokemon.abilities.join(', ')}</p>
-                            <p><strong>Types:</strong> {pokemon.types.join(', ')}</p>
-                        </div>
-                        <button onClick={handleFavorite} className="favorite-button">
-                            {isFavorite ? 'Es tu favorito ❤️' : 'Marcar como Favorito ❤️'}
-                        </button>
-                    </>
-                )}
+              {pokemon && (
+                <>
+                  <div className="pokemon-detail-image">
+                    <img src={pokemon.image} alt={pokemon.name} />
+                  </div>
+                  <div className="pokemon-detail-info">
+                    <h1>{pokemon.name}</h1>
+                    <p><strong>Height:</strong> {pokemon.height} decimetres</p>
+                    <p><strong>Weight:</strong> {pokemon.weight} hectograms</p>
+                    <p><strong>Abilities:</strong> {pokemon.abilities.join(', ')}</p>
+                    <p><strong>Types:</strong> {pokemon.types.join(', ')}</p>
+                  </div>
+                  <button onClick={handleFavorite} className="favorite-button">
+                    {isFavorite ? 'Es tu favorito ❤️' : 'Marcar como Favorito ❤️'}
+                  </button>
+                </>
+              )}
             </div>
+          </div>
         </div>
-    );
+      );
 };
 
 export default PokemonDetail;

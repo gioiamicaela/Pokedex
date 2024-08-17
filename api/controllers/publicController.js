@@ -22,7 +22,6 @@ module.exports = {
 
             res.json({ token, favorite });
         } catch (error) {
-            console.error('Error en el inicio de sesión:', error);
             res.status(500).json({ message: 'Error en el inicio de sesión' });
         }
     },
@@ -46,22 +45,7 @@ module.exports = {
 
             res.status(201).json({ message: 'Usuario registrado exitosamente' });
         } catch (error) {
-            console.error('Error en el registro de usuario:', error);
             res.status(500).json({ message: 'Error en el registro de usuario' });
-        }
-    },
-    handlePokemonList: async (req, res) => {
-        const token = req.headers['authorization']?.split(' ')[1];
-
-        if (!token) {
-            return res.status(401).json({ message: 'Acceso denegado' });
-        }
-
-        try {
-            const verified = jwt.verify(token, SECRET_KEY);
-            res.json({ message: 'Datos protegidos', user: verified });
-        } catch (err) {
-            res.status(401).json({ message: 'Token no válido' });
         }
     },
 }

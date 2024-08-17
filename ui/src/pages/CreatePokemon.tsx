@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import NavBar from '../components/NavBar';
+import './CreatePokemon.css';
 
 const CreatePokemonPage = () => {
     const [name, setName] = useState('');
@@ -72,92 +73,83 @@ const CreatePokemonPage = () => {
     };
 
     return (
-        <div className="container mx-auto p-6">
+        <div className="page-container">
+          <div className="navbar-container">
             <NavBar />
-            <h1 className="text-2xl font-bold mb-6">Crear un Nuevo Pokémon</h1>
-            <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                {error && <p className="text-red-500 mb-4">{error}</p>}
+          </div>
+          <div className="pokemon-form-container">
+            <div className="pokemon-form">
+              <h1>Crear un Nuevo Pokémon</h1>
+              <form onSubmit={handleSubmit}>
+                {error && <p className="error-message">{error}</p>}
                 <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-                        Nombre:
-                    </label>
-                    <input
-                        id="name"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Ej: Pikachu"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        required
-                    />
+                  <label htmlFor="name">Nombre:</label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ej: Pikachu"
+                    required
+                  />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="height">
-                        Altura (decímetros):
-                    </label>
-                    <input
-                        id="height"
-                        type="number"
-                        value={height}
-                        onChange={(e) => setHeight(e.target.value)}
-                        placeholder="Ej: 4"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        required
-                    />
+                  <label htmlFor="height">Altura (decímetros):</label>
+                  <input
+                    id="height"
+                    type="number"
+                    value={height}
+                    onChange={(e) => setHeight(e.target.value)}
+                    placeholder="Ej: 4"
+                    required
+                  />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="weight">
-                        Peso (hectogramos):
-                    </label>
-                    <input
-                        id="weight"
-                        type="number"
-                        value={weight}
-                        onChange={(e) => setWeight(e.target.value)}
-                        placeholder="Ej: 60"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        required
-                    />
+                  <label htmlFor="weight">Peso (hectogramos):</label>
+                  <input
+                    id="weight"
+                    type="number"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    placeholder="Ej: 60"
+                    required
+                  />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="abilities">
-                        Habilidades (separadas por comas):
-                    </label>
-                    <input
-                        id="abilities"
-                        type="text"
-                        value={abilities}
-                        onChange={(e) => setAbilities(e.target.value)}
-                        placeholder="Ej: Static, Lightning Rod"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        required
-                    />
+                  <label htmlFor="abilities">Habilidades (separadas por comas):</label>
+                  <input
+                    id="abilities"
+                    type="text"
+                    value={abilities}
+                    onChange={(e) => setAbilities(e.target.value)}
+                    placeholder="Ej: Static, Lightning Rod"
+                    required
+                  />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="types">
-                        Tipos (separados por comas):
-                    </label>
-                    <input
-                        id="types"
-                        type="text"
-                        value={types}
-                        onChange={(e) => setTypes(e.target.value)}
-                        placeholder="Ej: Electric"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        required
-                    />
+                  <label htmlFor="types">Tipos (separados por comas):</label>
+                  <input
+                    id="types"
+                    type="text"
+                    value={types}
+                    onChange={(e) => setTypes(e.target.value)}
+                    placeholder="Ej: Electric"
+                    required
+                  />
                 </div>
                 <div className="flex items-center justify-between">
-                    <button
-                        type="submit"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    >
-                        Crear Pokémon
-                    </button>
+                  <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Crear Pokémon
+                  </button>
                 </div>
-            </form>
+              </form>
+            </div>
+          </div>
         </div>
-    );
+      );
 };
 
 export default CreatePokemonPage;
