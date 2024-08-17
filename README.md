@@ -21,11 +21,11 @@ Navigate to the project folder and run the following command to install the nece
 npm install
 
 ### 3. Configure Environment Variables
-Create a .env file in the root of the project and add the following environment variables. 
-Front:
+Create a .env file under ui/ and another one under api/ and add the following environment variables. 
+ui/.env:
 VITE_API_URL=
 
-Back:
+api/.env:
 JWT_SECRET=
 APP_PORT=
 MONGODB_CONNECTION_URL=
