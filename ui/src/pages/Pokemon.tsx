@@ -10,6 +10,7 @@ interface Pokemon {
     name: string;
     url: string;
     image: string;
+    _id?: string;
 }
 
 const Pokemon = () => {
@@ -34,6 +35,7 @@ const Pokemon = () => {
                     'Authorization': `Bearer ${token}`,
                 },
             });
+            console.log(response.data.customPokemons)
             setCustomPokemons(response.data.customPokemons);
         } catch (err) {
             setError('Error fetching custom Pokémon.');
@@ -107,7 +109,7 @@ const Pokemon = () => {
 
     const indexOfLastPokemon = currentPage * pokemonsPerPage;
     const indexOfFirstPokemon = indexOfLastPokemon - pokemonsPerPage;
-    const totalPages = Math.ceil((pokemons.length + customPokemons.length) / pokemonsPerPage); 
+    const totalPages = Math.ceil((pokemons.length + customPokemons.length) / pokemonsPerPage);
     const maxPageGroup = Math.ceil(totalPages / 5);
 
     const paginate = (pageNumber: number) => {
@@ -139,19 +141,20 @@ const Pokemon = () => {
 
     return (
         <div>
-            <NavBar/>
+            <NavBar />
             <h1>Pokémon List</h1>
             <SearchBar query={searchQuery} onSearch={setSearchQuery} />
             <Link to="/createPokemon">Crear tu Pokemon</Link>
             <div className="pokemon-grid">
-                {currentPokemons.map((pokemon, index )=> (
-                     <div key={`${pokemon.name}-${index}`} className="pokemon-item">
-                     <Link to={`/pokemon/${pokemon.name}`}>
-                         <img src={pokemon.image} alt={pokemon.name} />
-                     </Link>
-                     <span>{pokemon.name}</span>
-                 </div>
+                {currentPokemons.map((pokemon, index) => (
+                    <div key={`${pokemon.name}-${index}`} className="pokemon-item">
+                      <Link to={pokemon._id ? `/customPokemon/${pokemon._id}` : `/pokemon/${pokemon.name}`}>
+                            <img src={pokemon.image} alt={pokemon.name} />
+                        </Link>
+                        <span>{pokemon.name}</span>
+                    </div>
                 ))}
+
             </div>
             <Pagination
                 currentPage={currentPage}

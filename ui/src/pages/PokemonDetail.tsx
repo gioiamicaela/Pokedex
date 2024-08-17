@@ -19,11 +19,13 @@ const PokemonDetail = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
     const [token, setToken] = useState("");
+    const [email, setEmail] = useState("");
     const [isFavorite, setIsFavorite] = useState<boolean>(false);
     const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const savedToken = localStorage.getItem('token');
+        const savedEmail = localStorage.getItem('email');
         const savedFavorite = localStorage.getItem('favorite');
         if (savedToken) {
             setToken(savedToken);
@@ -34,9 +36,18 @@ const PokemonDetail = () => {
             return;
         }
 
+        if (savedEmail) {
+            setEmail(savedEmail);
+        } else {
+            setError('No email found.');
+            setLoading(false);
+            return;
+        }
+
         const fetchPokemon = async () => {
             try {
                 const response = await axios.get(`${apiUrl}/pokemon/${name}`, {
+                    params: { email },
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },

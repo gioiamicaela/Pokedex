@@ -11,6 +11,7 @@ import PokemonDetail from './pages/PokemonDetail';
 import LoginPage from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoutes'; 
 import CreatePokemonPage from './pages/CreatePokemon';
+import CustomPokemonDetail from './pages/CutsomPokemonDetail';
 
 setupIonicReact();
 
@@ -22,7 +23,8 @@ const App: React.FC = () => (
           <Route exact path="/" component={LoginPage} />
           <ProtectedRoute exact path="/pokemon" component={Pokemon} />
           <ProtectedRoute exact path="/createPokemon" component={CreatePokemonPage} />
-          <ProtectedRoute exact path="/pokemon/:name" component={PokemonDetail} /> 
+          <ProtectedRoute exact path="/pokemon/:name" component={PokemonDetail} />
+          <ProtectedRoute exact path="/customPokemon/:id" component={CustomPokemonDetail} /> 
           <Redirect from="*" to="/" />
         </Switch>
       </IonRouterOutlet>

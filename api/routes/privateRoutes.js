@@ -2,7 +2,7 @@ const express = require('express');
 const privateRouter = express.Router();
 const { expressjwt: checkJwt } = require("express-jwt");
 
-const {  handlePokemonList, handlePokemonDetail, handleFavorite, handleCreate, handleCustomPokemon } = require('../controllers/privateController');
+const {  handlePokemonList, handlePokemonDetail, handleFavorite, handleCreate, handleCustomPokemon,handleGetCustomPokemon, updateCustomPokemon,  deleteCustomPokemon } = require('../controllers/privateController');
 
 privateRouter.use(checkJwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }));
 
@@ -18,5 +18,8 @@ privateRouter.get('/pokemon/:name', handlePokemonDetail);
 privateRouter.post('/favorite/:name', handleFavorite);
 privateRouter.post('/pokemonList', handleCreate);
 privateRouter.post('/customPokemons', handleCustomPokemon);
+privateRouter.get('/customPokemon/:id', handleGetCustomPokemon);
+privateRouter.put('/customPokemon/:id', updateCustomPokemon);
+privateRouter.delete('/customPokemon/:id',  deleteCustomPokemon);
 
 module.exports = privateRouter;

@@ -37,7 +37,7 @@ module.exports = {
     },
     handleFavorite: async (req, res) => {
         const { email } = req.body;
-        const {name} = req.query
+        const { name } = req.query
 
         if (!name) {
             return res.status(400).json({ message: 'Pokémon name is required' });
@@ -62,21 +62,21 @@ module.exports = {
     },
     handleCreate: async (req, res) => {
         const { name, height, weight, abilities, types, email } = req.body;
-    
+
         if (!name || !height || !weight || !abilities || !types || !email) {
             return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
         }
-        
-        try {    
+
+        try {
             const user = await User.findOne({ email: email });
-    
+
             if (!user) {
                 return res.status(404).json({ message: 'Usuario no encontrado.' });
             }
-    
+
             const abilitiesArray = typeof abilities === 'string' ? abilities.split(',').map((ability) => ability.trim()) : [];
             const typesArray = typeof types === 'string' ? types.split(',').map((type) => type.trim()) : [];
-    
+
             const newPokemon = {
                 name,
                 height,
@@ -87,25 +87,97 @@ module.exports = {
 
             user.customPokemons.push(newPokemon);
             await user.save();
-    
-            res.status(201).json({ message: 'Pokémon creado exitosamente.', pokemon: newPokemon });
+
+            const createdPokemon = user.customPokemons[user.customPokemons.length - 1];
+            res.status(201).json({ message: 'Pokémon creado exitosamente.', pokemon: createdPokemon });
         } catch (error) {
             console.error('Error al crear el Pokémon:', error);
             res.status(500).json({ message: 'Error interno del servidor.' });
         }
     },
     handleCustomPokemon: async (req, res) => {
-        const { email } = req.body; 
+        const { email } = req.body;
 
         try {
-          const user = await User.findOne({ email });
-          if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
-          }
-      
-          res.status(200).json({ customPokemons: user.customPokemons });
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
+            res.status(200).json({ customPokemons: user.customPokemons });
         } catch (error) {
-          res.status(500).json({ message: 'Error al obtener los Pokémon personalizados' });
+            res.status(500).json({ message: 'Error al obtener los Pokémon personalizados' });
+        }
+    },
+    handleGetCustomPokemon: async (req, res) => {
+        const { id } = req.params;
+
+        try {
+            const user = await User.findOne({ 'customPokemons._id': id });
+            if (!user) {
+                return res.status(404).json({ message: 'Pokémon no encontrado.' });
+            }
+
+            const customPokemon = user.customPokemons.id(id);
+            if (!customPokemon) {
+                return res.status(404).json({ message: 'Pokémon no encontrado.' });
+            }
+
+            res.status(200).json(customPokemon);
+        } catch (error) {
+            console.error('Error al obtener el Pokémon personalizado:', error);
+            res.status(500).json({ message: 'Error interno del servidor.' });
+        }
+    },
+    updateCustomPokemon: async (req, res) => {
+        const { id } = req.params;
+        const { name, height, weight, abilities, types} = req.body;
+
+        try {
+            const user = await User.findOne({ 'customPokemons._id': id });
+
+            if (!user) {
+                return res.status(404).json({ message: 'Usuario no encontrado.' });
+            }
+
+            const customPokemon = user.customPokemons.id(id);
+
+            if (!customPokemon) {
+                return res.status(404).json({ message: 'Pokémon no encontrado.' });
+            }
+
+            customPokemon.name = name || customPokemon.name;
+            customPokemon.height = height || customPokemon.height;
+            customPokemon.weight = weight || customPokemon.weight;
+            customPokemon.abilities = abilities || customPokemon.abilities;
+            customPokemon.types = types || customPokemon.types;
+
+            await user.save();
+
+            res.status(200).json({ message: 'Pokémon actualizado exitosamente.', pokemon: customPokemon });
+        } catch (error) {
+            console.error('Error al actualizar el Pokémon:', error);
+            res.status(500).json({ message: 'Error interno del servidor.' });
+        }
+    },
+    deleteCustomPokemon: async (req, res) => {
+        const { id } = req.params;
+
+        try {
+            const user = await User.findOneAndUpdate(
+                { 'customPokemons._id': id },
+                { $pull: { customPokemons: { _id: id } } },
+                { new: true } // Retorna el documento actualizado
+            );
+    
+            if (!user) {
+                return res.status(404).json({ message: 'Usuario no encontrado.' });
+            }
+    
+            res.status(200).json({ message: 'Pokémon eliminado exitosamente.' });
+        } catch (error) {
+            console.error('Error al eliminar el Pokémon:', error);
+            res.status(500).json({ message: 'Error interno del servidor.' });
         }
     }
 }
