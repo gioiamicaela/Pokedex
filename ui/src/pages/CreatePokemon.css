@@ -1,0 +1,27 @@
+.pokemon-detail {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background-color: #f8fafc;
+}
+
+.pokemon-detail-image img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    margin-right: 16px;
+}
+
+.pokemon-detail-info {
+    max-width: 500px;
+}
+
+.pokemon-detail-info h1 {
+    font-size: 2rem;
+    margin-bottom: 16px;
+}
+
+.pokemon-detail-info p {
+    font-size: 1.125rem;
+    margin-bottom: 8px;
+}

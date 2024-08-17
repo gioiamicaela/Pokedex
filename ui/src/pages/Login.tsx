@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 import NavBar from '../components/NavBar';
 import { useHistory } from 'react-router-dom';
 
@@ -8,6 +8,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const apiUrl = import.meta.env.VITE_API_URL; 
     const history = useHistory(); 
+    const [error, setError] = useState("")
     
     const handleSignIn = async () => {
        
@@ -24,10 +25,20 @@ const LoginPage = () => {
                 localStorage.setItem('favorite', JSON.stringify(favorite)); 
                 history.push('/pokemon'); 
             } else {
-                console.error('Error en la autenticación');
+                setError('Error en la autenticación. Por favor, verifica tus credenciales.');
             }
-        } catch (error) {
-            console.error('Error en la solicitud:', error);
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    setError(error.response.data.message); // Mostrar mensaje del backend
+                } else if (error.request) {
+                    setError('No se recibió respuesta del servidor. Inténtalo de nuevo.');
+                } else {
+                    setError('Ocurrió un error en la solicitud. Inténtalo de nuevo.');
+                }
+            } else {
+                setError('Ocurrió un error inesperado. Inténtalo de nuevo.');
+            }
         }
     };
 
@@ -37,15 +48,24 @@ const LoginPage = () => {
                 email,
                 password,
             });
-console.log(response.data)
             if (response.status === 200) {
                 const { token } = response.data;
                 localStorage.setItem('token', token);
             } else {
-                console.error('Error en la autenticación');
+                setError('Error en la autenticación')
             }
-        } catch (error) {
-            console.error('Error en la solicitud:', error);
+        }  catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    setError(error.response.data.message);
+                } else if (error.request) {
+                    setError('No se recibió respuesta del servidor. Inténtalo de nuevo.');
+                } else {
+                    setError('Ocurrió un error en la solicitud. Inténtalo de nuevo.');
+                }
+            } else {
+                setError('Ocurrió un error inesperado. Inténtalo de nuevo.');
+            }
         }
     };
 
@@ -82,6 +102,11 @@ console.log(response.data)
                     Registrarse
                 </button>
             </div>
+            {error && (
+                <div className="mt-4 text-red-500">
+                    {error}
+                </div>
+            )}
         </div>
     );
 };

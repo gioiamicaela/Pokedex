@@ -59,5 +59,53 @@ module.exports = {
             console.error('Error updating favorite Pokémon:', error);
             res.status(500).json({ message: 'Error al actualizar el Pokémon favorito' });
         }
+    },
+    handleCreate: async (req, res) => {
+        const { name, height, weight, abilities, types, email } = req.body;
+    
+        if (!name || !height || !weight || !abilities || !types || !email) {
+            return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
+        }
+        
+        try {    
+            const user = await User.findOne({ email: email });
+    
+            if (!user) {
+                return res.status(404).json({ message: 'Usuario no encontrado.' });
+            }
+    
+            const abilitiesArray = typeof abilities === 'string' ? abilities.split(',').map((ability) => ability.trim()) : [];
+            const typesArray = typeof types === 'string' ? types.split(',').map((type) => type.trim()) : [];
+    
+            const newPokemon = {
+                name,
+                height,
+                weight,
+                abilities: abilitiesArray,
+                types: typesArray,
+            };
+
+            user.customPokemons.push(newPokemon);
+            await user.save();
+    
+            res.status(201).json({ message: 'Pokémon creado exitosamente.', pokemon: newPokemon });
+        } catch (error) {
+            console.error('Error al crear el Pokémon:', error);
+            res.status(500).json({ message: 'Error interno del servidor.' });
+        }
+    },
+    handleCustomPokemon: async (req, res) => {
+        const { email } = req.body; 
+
+        try {
+          const user = await User.findOne({ email });
+          if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+          }
+      
+          res.status(200).json({ customPokemons: user.customPokemons });
+        } catch (error) {
+          res.status(500).json({ message: 'Error al obtener los Pokémon personalizados' });
+        }
     }
 }

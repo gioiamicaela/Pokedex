@@ -18,11 +18,29 @@ const Pokemon = () => {
     const [loading, setLoading] = useState(false);
     const apiUrl = import.meta.env.VITE_API_URL;
     const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+    const [customPokemons, setCustomPokemons] = useState<Pokemon[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pokemonsPerPage] = useState<number>(20);
     const [offset, setOffset] = useState<number>(0);
     const [pageGroup, setPageGroup] = useState<number>(0);
     const [searchQuery, setSearchQuery] = useState<string>("");
+    const [email, setEmail] = useState("")
+
+    const fetchCustomPokemons = async () => {
+        if (!token || !email) return;
+        try {
+            const response = await axios.post(`${apiUrl}/customPokemons`, { email }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            setCustomPokemons(response.data.customPokemons);
+        } catch (err) {
+            setError('Error fetching custom Pokémon.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const fetchPokemons = async (offset: number) => {
         setLoading(true);
@@ -56,6 +74,7 @@ const Pokemon = () => {
 
     useEffect(() => {
         const savedToken = localStorage.getItem('token');
+        const savedEmail = localStorage.getItem('email');
         if (savedToken) {
             setToken(savedToken);
         } else {
@@ -63,10 +82,18 @@ const Pokemon = () => {
             setLoading(false);
             return;
         }
+        if (savedEmail) {
+            setEmail(savedEmail)
+        } else {
+            setError('Email not found.');
+            setLoading(false);
+            return;
+        }
     }, []);
 
     useEffect(() => {
         if (token) {
+            fetchCustomPokemons();
             fetchPokemons(offset);
         }
     }, [token, offset]);
@@ -80,7 +107,7 @@ const Pokemon = () => {
 
     const indexOfLastPokemon = currentPage * pokemonsPerPage;
     const indexOfFirstPokemon = indexOfLastPokemon - pokemonsPerPage;
-    const totalPages = Math.ceil(pokemons.length / pokemonsPerPage);
+    const totalPages = Math.ceil((pokemons.length + customPokemons.length) / pokemonsPerPage); 
     const maxPageGroup = Math.ceil(totalPages / 5);
 
     const paginate = (pageNumber: number) => {
@@ -101,7 +128,7 @@ const Pokemon = () => {
         }
     };
 
-    const filteredPokemons = pokemons.filter(pokemon =>
+    const filteredPokemons = [...customPokemons, ...pokemons].filter(pokemon =>
         pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -115,6 +142,7 @@ const Pokemon = () => {
             <NavBar/>
             <h1>Pokémon List</h1>
             <SearchBar query={searchQuery} onSearch={setSearchQuery} />
+            <Link to="/createPokemon">Crear tu Pokemon</Link>
             <div className="pokemon-grid">
                 {currentPokemons.map((pokemon, index )=> (
                      <div key={`${pokemon.name}-${index}`} className="pokemon-item">
