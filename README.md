@@ -13,7 +13,7 @@ Before you start, make sure you have the following programs installed on your sy
 ### 1. Clone the Repository
 First, clone the repository to your local machine using the following command:
 
-git clone https://github.com/your-username/your-repository.git
+git clone [https://github.com/your-username/your-repository.git](https://github.com/gioiamicaela/Pokedex/)
 
 ### 2. Install Dependencies
 Navigate to the project folder and run the following command to install the necessary dependencies:
