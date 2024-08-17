@@ -13,7 +13,7 @@ Before you start, make sure you have the following programs installed on your sy
 ### 1. Clone the Repository
 First, clone the repository to your local machine using the following command:
 
-git clone [https://github.com/gioiamicaela/Pokedex.git](https://github.com/gioiamicaela/Pokedex/)
+`git clone [https://github.com/gioiamicaela/Pokedex.git](https://github.com/gioiamicaela/Pokedex/)`
 
 ### 2. Install Dependencies
 Navigate to the project folder and run the following command to install the necessary dependencies:
@@ -32,4 +32,4 @@ MONGODB_CONNECTION_URL=
 
 ### 4. Start the Development Server
 Once the environment variables are set up, you can start the development server with the following command:
-npm start
+`npm start`
