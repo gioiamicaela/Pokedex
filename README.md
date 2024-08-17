@@ -18,7 +18,7 @@ git clone [https://github.com/gioiamicaela/Pokedex.git](https://github.com/gioia
 ### 2. Install Dependencies
 Navigate to the project folder and run the following command to install the necessary dependencies:
 
-npm install
+`npm install`
 
 ### 3. Configure Environment Variables
 Create a .env file under ui/ and another one under api/ and add the following environment variables. 
