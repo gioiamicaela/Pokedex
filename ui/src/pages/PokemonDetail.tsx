@@ -53,7 +53,6 @@ const PokemonDetail = () => {
                     },
                 });
                 const pokemonData = response.data;
-
                 if (pokemonData) {
                     setPokemon({
                         name: pokemonData.name,
@@ -75,7 +74,7 @@ const PokemonDetail = () => {
             fetchPokemon();
         }
 
-    }, [token, name, apiUrl]);
+    }, [ isFavorite]);
 
     const handleFavorite = async () => {
         const token = localStorage.getItem('token');

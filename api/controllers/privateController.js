@@ -37,24 +37,29 @@ module.exports = {
     },
     handleFavorite: async (req, res) => {
         const { email } = req.body;
-        const { name } = req.query
-
-        if (!name) {
-            return res.status(400).json({ message: 'Pokémon name is required' });
+        const { name, id } = req.query;
+        if (!name && !id) {
+            return res.status(400).json({ message: 'Pokémon name or id is required' });
         }
-
+    
         try {
-            const user = await User.findOneAndUpdate(
-                { email },
-                { favorite: name },
-                { new: true, runValidators: true }
-            );
-
+            const user = await User.findOne({ email });
+    
             if (!user) {
                 return res.status(404).json({ message: 'Usuario no encontrado' });
             }
-
-            res.json({ isFavorite: user.favorite === name });
+            const identifier = name ? name : id;
+    
+            const isFavorite = user.favorite === identifier;
+    
+            if (isFavorite) {
+                user.favorite = '';
+            } else {
+                user.favorite = identifier;
+            }
+            await user.save();
+    
+            res.json({ isFavorite: !isFavorite }); 
         } catch (error) {
             console.error('Error updating favorite Pokémon:', error);
             res.status(500).json({ message: 'Error al actualizar el Pokémon favorito' });
@@ -167,7 +172,7 @@ module.exports = {
             const user = await User.findOneAndUpdate(
                 { 'customPokemons._id': id },
                 { $pull: { customPokemons: { _id: id } } },
-                { new: true } // Retorna el documento actualizado
+                { new: true } 
             );
     
             if (!user) {

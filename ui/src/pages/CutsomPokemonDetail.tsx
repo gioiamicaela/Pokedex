@@ -84,7 +84,6 @@ const CustomPokemonDetail = () => {
             if (isNowFavorite) {
                 localStorage.setItem('favorite', id);
             } else {
-                console.log("hola")
                 localStorage.removeItem('favorite');
             }
 
@@ -130,7 +129,7 @@ const CustomPokemonDetail = () => {
     };
 
     const handleCancel = () => {
-        setEditedPokemon(pokemon); 
+        setEditedPokemon(pokemon);
         setIsEditing(false);
     };
 
@@ -221,6 +220,9 @@ const CustomPokemonDetail = () => {
             </div>
 
             <button onClick={handleDelete}>Eliminar</button>
+            <button onClick={handleFavorite} className="favorite-button">
+                {isFavorite ? 'Es tu favorito ❤️' : 'Marcar como Favorito ❤️'}
+            </button>
         </div>
     );
 };
